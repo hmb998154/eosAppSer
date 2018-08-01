@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html>
+
+<!-- Mirrored from www.zi-han.net/theme/hplus/tabs_panels.html by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 20 Jan 2016 14:19:53 GMT -->
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>H+ 后台主题UI框架 - 选项卡 &amp; 面板</title>
+    <meta name="keywords" content="H+后台主题,后台bootstrap框架,会员中心主题,后台HTML,响应式后台">
+    <meta name="description" content="H+是一个完全响应式，基于Bootstrap3最新版本开发的扁平化主题，她采用了主流的左右两栏式布局，使用了Html5+CSS3等现代技术">
+
+    <link rel="shortcut icon" href="favicon.ico"> <link href="__ADMIN__/css/bootstrap.min14ed.css?v=3.3.6" rel="stylesheet">
+    <link href="__ADMIN__/css/font-awesome.min93e3.css?v=4.4.0" rel="stylesheet">
+    <link href="__ADMIN__/css/plugins/iCheck/custom.css" rel="stylesheet">
+    <link href="__ADMIN__/css/animate.min.css" rel="stylesheet">
+    <link href="__ADMIN__/css/style.min862f.css?v=4.1.0" rel="stylesheet">
+    <script src="__ADMIN__/js/jquery.min.js?v=2.1.4"></script>
+    <script src="__ADMIN__/js/ajaxfileupload.js"></script>
+    <link rel="stylesheet" href="__ADMIN__/css/admin.css">
+
+</head>
+
+<body class="gray-bg">
+    <div class="wrapper wrapper-content animated fadeIn">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="tabs-container">
+                    <ul class="nav nav-tabs">
+                        <li class="{if condition="input('tab',1) eq 1"}active{/if}"><a data-toggle="tab" href="#tab-1" aria-expanded="true">幻灯片列表</a>
+                        </li>
+                        <li class="{if condition="input('tab',1) eq 2"}active{/if}"><a data-toggle="tab" href="#tab-2" aria-expanded="false">添加新幻灯片</a>
+                        </li>
+                        <li id="showtab" class="{if condition="input('tab',1) eq 3"}active{/if}" style="{if condition="input('tab',1)!=3"}display:none{/if}"><a data-toggle="tab" href="#tab-3" aria-expanded="false">编辑{$info.name}</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        <div id="tab-1" class="tab-pane {if condition="input('tab',1) eq 1"}active{/if}">
+                            <div class="panel-body">
+                                <form method="post" class="form-horizontal" action="{:url('slider/index')}" data-type="ajax">
+                                    <input type="hidden" name="tab" value="1" />
+                                    <div class="table-responsive">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th width="10%">排序</th>
+                                                    <th width="25%">图片</th>
+                                                    <th width="20%">标题</th>
+                                                    <th width="30%">远程地址</th>
+                                                    <th width="15%">操作</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {volist name="sliderlist" id="vo"}
+                                                    <tr>
+                                                        <td>
+                                                            <input type="text" class="form-control" name="sort[{$vo.id}]" value="{$vo.sort}">
+                                                        </td>
+                                                        <td><img src="__UPLOADS__/{$vo.path}" alt="{$vo.title}" width="160"></td>
+                                                        <td style="text-align:left">{$vo.title}</td>
+                                                        <td>{$vo.url}</td>
+                                                        <td>
+                                                            <a href="{:url('index',['tab'=>3,'id'=>$vo.id])}" title="编辑"><i class="fa fa-edit text-navy"></i></a>&nbsp;&nbsp;
+                                                            <a name="delete" href="{:url('delete',['id'=>$vo.id])}" title="删除"><i class="fa fa-trash-o text-navy"></i></a>
+                                                        </td>
+                                                    </tr>
+                                                {/volist}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-sm-4 col-sm-offset-2">
+                                            <button class="btn btn-primary" type="submit">提交</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div id="tab-2" class="tab-pane {if condition="input('tab',1) eq 2"}active{/if}">
+                            <div class="panel-body">
+                                <form method="post" class="form-horizontal" action="{:url('slider/add')}" data-type="ajax">
+                                    <input type="hidden" name="tab" value="2" />
+
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">标题</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" name="title" class="form-control" value="">
+                                        </div>
+                                    </div>
+                                    <div class="hr-line-dashed"></div>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">图片</label>
+                                        <div class="col-sm-10">
+                                            <div id="file-pretty">
+                                                <div>
+                                                    <input type="file" id="file_path" name="file" class="form-control" style="display: none;">
+                                                    <div class="input-append input-group">
+                                                        <span class="input-group-btn">
+                                                            <button id="btn_path" class="btn btn-white" type="button">选择图片</button>
+                                                        </span>
+                                                        <input id="info_path" name="path" class="input-large form-control" type="text" value="">
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <script type="text/javascript">
+                                            $(function(){
+                                                $("#btn_path").click(function(){
+                                                    $("#file_path").click();
+                                                });
+
+                                                //异步上传
+                                                $("body").delegate('#file_path', 'change', function(){
+                                                    var filepath = $("input[name='file']").val();
+                                                    var arr = filepath.split('.');
+                                                    var ext = arr[arr.length-1];
+
+                                                    if('gif|jpg|png|bmp'.indexOf(ext)>=0){
+                                                        $.ajaxFileUpload({
+                                                          url: '{:url('upload_image')}',
+                                                          secureurl: false,
+                                                          fileElementId: 'file_path', //file标签ID
+                                                          dataType: 'json', //返回数据类型
+                                                          data:{name:'file'},
+                                                          success:function (data,status){
+                                                              $("#info_path").val(data);
+                                                              $("#info_path").focus();
+                                                          },
+                                                          complete:function (XMLHttpRequest){
+
+                                                          },
+                                                          error:function (data,status,e){
+                                                              layer.alert('上传失败!');
+                                                          },
+                                                      });
+                                                    } else {
+                                                        //清空file
+                                                        $("#file_path").val("");
+                                                        layer.alert('请上传合适的图片类型!');
+                                                    }
+
+                                                });
+                                            });
+                                            </script>
+                                        </div>
+                                    </div>
+                                    <div class="hr-line-dashed"></div>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">排序</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" name="sort" class="form-control" value="">
+                                        </div>
+                                    </div>
+                                    <div class="hr-line-dashed"></div>
+                                    <div class="form-group">
+                                        <div class="col-sm-4 col-sm-offset-2">
+                                            <button class="btn btn-primary" type="submit">提交</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div id="tab-3" class="tab-pane {if condition="input('tab',1) eq 3"}active{/if}">
+                            <div class="panel-body">
+                                <form method="post" class="form-horizontal" action="{:url('slider/edit')}" data-type="ajax">
+                                    <input type="hidden" name="tab" value="3" />
+                                    <input type="hidden" name="id" value="{$info.id}" />
+
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">标题</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" name="title" class="form-control" value="{$info.title}">
+                                        </div>
+                                    </div>
+                                    <div class="hr-line-dashed"></div>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">图片</label>
+                                        <div class="col-sm-10">
+                                            <div id="file-pretty">
+                                                <div>
+                                                    <input type="file" id="file_path_edit" name="file_edit" class="form-control" style="display: none;">
+                                                    <div class="input-append input-group">
+                                                        <span class="input-group-btn">
+                                                            <button id="btn_path_edit" class="btn btn-white" type="button">选择图片</button>
+                                                        </span>
+                                                        <input id="info_path_edit" name="path" class="input-large form-control" type="text" value="{$vo.path}">
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <script type="text/javascript">
+                                            $(function(){
+                                                $("#btn_path_edit").click(function(){
+                                                    $("#file_path_edit").click();
+                                                });
+
+                                                //异步上传
+                                                $("body").delegate('#file_path_edit', 'change', function(){
+                                                    var filepath = $("input[name='file_edit']").val();
+                                                    var arr = filepath.split('.');
+                                                    var ext = arr[arr.length-1];
+
+                                                    if('gif|jpg|png|bmp'.indexOf(ext)>=0){
+                                                        $.ajaxFileUpload({
+                                                          url: '{:url('upload_image')}',
+                                                          secureurl: false,
+                                                          fileElementId: 'file_path_edit', //file标签ID
+                                                          dataType: 'json', //返回数据类型
+                                                          data:{name:'file_edit'},
+                                                          success:function (data,status){
+                                                              $("#info_path_edit").val(data);
+                                                              $("#info_path_edit").focus();
+                                                          },
+                                                          complete:function (XMLHttpRequest){
+
+                                                          },
+                                                          error:function (data,status,e){
+                                                              layer.alert('上传失败!');
+                                                          },
+                                                      });
+                                                    } else {
+                                                        //清空file
+                                                        $("#file_path_edit").val("");
+                                                        layer.alert('请上传合适的图片类型!');
+                                                    }
+
+                                                });
+                                            });
+                                            </script>
+                                        </div>
+                                    </div>
+                                    <div class="hr-line-dashed"></div>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">排序</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" name="sort" class="form-control" value="{$info.sort}">
+                                        </div>
+                                    </div>
+                                    <div class="hr-line-dashed"></div>
+                                    <div class="form-group">
+                                        <div class="col-sm-4 col-sm-offset-2">
+                                            <button class="btn btn-primary" type="submit">提交</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="__ADMIN__/js/bootstrap.min.js?v=3.3.6"></script>
+    <script src="__ADMIN__/js/content.min.js?v=1.0.0"></script>
+    <script src="__ADMIN__/js/plugins/iCheck/icheck.min.js"></script>
+    <script src="__ADMIN__/js/plugins/layer/layer.min.js"></script>
+    <script src="__ADMIN__/js/layer_hplus.js"></script>
+    <script src="__ADMIN__/js/plugins/layer/layer.min.js"></script>
+    <script src="__ADMIN__/js/plugins/prettyfile/bootstrap-prettyfile.js"></script>
+    <script src="__ADMIN__/js/plugins/cropper/cropper.min.js"></script>
+    <script src="__ADMIN__/js/demo/form-advanced-demo.min.js"></script>
+    <script src="__ADMIN__/js/plugins/layer/laydate/laydate.js"></script>
+
+</body>
+
+</html>
